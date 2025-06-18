@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulk File Renamer</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        .app-icon {
+            width: 48px;
+            height: 48px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+        }
+        button {
+            background-color: #007acc;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #005fa3;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        .btn-success {
+            background-color: #28a745;
+        }
+        .btn-success:hover {
+            background-color: #218838;
+        }
+        input, select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 5px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: inline-block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .path-display {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            word-break: break-all;
+            font-family: monospace;
+        }
+        .analysis, .results {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .error {
+            color: #dc3545;
+            background: #f8d7da;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success {
+            color: #155724;
+            background: #d4edda;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .preview-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .preview-table th, .preview-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .preview-table th {
+            background-color: #f2f2f2;
+        }
+        .hidden {
+            display: none;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>
+            <img src="../../icon/icone.svg" alt="App Icon" class="app-icon">
+            Bulk File Renamer
+        </h1>
+        
+        <!-- Seleção de Pasta -->
+        <div class="section">
+            <h3>1. Selecionar Pasta Raiz</h3>
+            <p>Escolha a pasta que contém as subpastas com arquivos a serem renomeados:</p>
+            <button id="selectFolder">📁 Selecionar Pasta</button>
+            <div id="selectedPath" class="path-display hidden"></div>
+        </div>
+
+        <!-- Análise da Pasta -->
+        <div id="analysisSection" class="section hidden">
+            <h3>2. Análise da Pasta</h3>
+            <div id="analysis" class="analysis"></div>
+            <button id="refreshAnalysis">🔄 Atualizar Análise</button>
+        </div>
+
+        <!-- Configurações -->
+        <div id="configSection" class="section hidden">
+            <h3>3. Configurações de Renomeação</h3>
+            
+            <div class="form-group">
+                <label for="startNumber">Número inicial:</label>
+                <input type="number" id="startNumber" value="1" min="0">
+            </div>
+            
+            <div class="form-group">
+                <label for="digits">Número de dígitos:</label>
+                <select id="digits">
+                    <option value="2">2 (01, 02, 03...)</option>
+                    <option value="3" selected>3 (001, 002, 003...)</option>
+                    <option value="4">4 (0001, 0002, 0003...)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="separator">Separador:</label>
+                <select id="separator">
+                    <option value="_">_ (underscore)</option>
+                    <option value="-">- (hífen)</option>
+                    <option value=" "> (espaço)</option>
+                    <option value="">Sem separador</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="fileTypes">Tipos de arquivo (deixe vazio para todos):</label>
+                <input type="text" id="fileTypes" placeholder="Ex: .jpg,.png,.pdf">
+                <small>Separe por vírgula. Ex: .jpg,.png,.pdf</small>
+            </div>
+        </div>
+
+        <!-- Preview -->
+        <div id="previewSection" class="section hidden">
+            <h3>4. Preview das Alterações</h3>
+            <button id="generatePreview" class="btn-success">👁️ Gerar Preview</button>
+            <div id="previewResults"></div>
+        </div>
+
+        <!-- Execução -->
+        <div id="executeSection" class="section hidden">
+            <h3>5. Executar Renomeação</h3>
+            <p><strong>⚠️ Atenção:</strong> Esta ação não pode ser desfeita!</p>
+            <button id="executeRename" class="btn-danger">🚀 Renomear Arquivos</button>
+            <div id="executeResults"></div>
+        </div>
+
+        <!-- Loading -->
+        <div id="loading" class="loading hidden">
+            <p>⏳ Processando...</p>
+        </div>
+    </div>
+
+    <script src="../renderer.js"></script>
+</body>
+</html>

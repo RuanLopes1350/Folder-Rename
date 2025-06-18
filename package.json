@@ -1,0 +1,44 @@
+{
+  "name": "bulk-file-renamer",
+  "version": "1.0.0",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder",
+    "build:mac": "electron-builder --mac",
+    "build:win": "electron-builder --win",
+    "build:linux": "electron-builder --linux"
+  },
+  "build": {
+    "appId": "com.ruanlopes.bulk-file-renamer",
+    "productName": "Bulk File Renamer",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "icon/**/*"
+    ],
+    "mac": {
+      "icon": "icon/icone.png",
+      "category": "public.app-category.utilities"
+    },
+    "win": {
+      "icon": "icon/icone.png",
+      "target": "nsis"
+    },
+    "linux": {
+      "icon": "icon/icone.png",
+      "category": "Utility"
+    }
+  },
+  "keywords": ["electron", "file-renamer", "bulk-rename", "utilities"],
+  "author": "Ruan Lopes",
+  "license": "MIT",
+  "description": "Aplicação para renomear arquivos automaticamente usando Electron",
+  "devDependencies": {
+    "electron": "^latest",
+    "electron-builder": "^24.0.0"
+  }
+}
