@@ -1,7 +1,7 @@
 {
   "name": "bulk-file-renamer",
   "version": "1.0.0",
-  "main": "src/main.js",
+  "main": "src/main_fixed.js",
   "scripts": {
     "start": "electron .",
     "dev": "electron . --dev",
@@ -33,12 +33,17 @@
       "category": "Utility"
     }
   },
-  "keywords": ["electron", "file-renamer", "bulk-rename", "utilities"],
+  "keywords": [
+    "electron",
+    "file-renamer",
+    "bulk-rename",
+    "utilities"
+  ],
   "author": "Ruan Lopes",
   "license": "MIT",
   "description": "Aplicação para renomear arquivos automaticamente usando Electron",
   "devDependencies": {
-    "electron": "^latest",
+    "electron": "^36.5.0",
     "electron-builder": "^24.0.0"
   }
 }
